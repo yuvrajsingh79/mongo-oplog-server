@@ -4,10 +4,10 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var mongoOplog = require('mongo-oplog');
-const oplog = mongoOplog('mongodb://127.0.0.1:27017/local', { ns: 'customers.customer' });
+const oplog = mongoOplog('mongodb://127.0.0.1:27017/local', { ns: 'db_name.collection_name' });
 
 var AWS = require('aws-sdk');
-AWS.config.update({ region: 'ap-south-1' });
+AWS.config.update({ region: 'region' }); //your region
 
 oplog.tail();
 var params = "";
@@ -17,7 +17,7 @@ oplog.on('insert', doc => {
   var msg = "Hi Admin, \n\n New Customer is added : \n\n";
   params = {
     Message: msg + JSON.stringify(doc.o),
-    TopicArn: 'arn:aws:sns:ap-south-1:143120903104:tricon'
+    TopicArn: 'YOUR_TOPIC_ARN' //provide your topic arn
   };
 
   // Create promise and SNS service object
@@ -39,7 +39,7 @@ oplog.on('update', doc => {
   var msg = "Hi Admin, \n\n A customer data is modified : \n\n";
   params = {
     Message: msg + JSON.stringify(doc.o),
-    TopicArn: 'arn:aws:sns:ap-south-1:143120903104:tricon'
+    TopicArn: 'YOUR_TOPIC_ARN' //provide your topic arn
   };
 
   // Create promise and SNS service object
@@ -61,7 +61,7 @@ oplog.on('delete', doc => {
   var msg = "Hi Admin, \n\n A Customer record is removed : \n\n";
   params = {
     Message: msg + JSON.stringify(doc.o),
-    TopicArn: 'arn:aws:sns:ap-south-1:143120903104:tricon'
+    TopicArn: 'YOUR_TOPIC_ARN' //provide your topic arn
   };
 
   // Create promise and SNS service object
